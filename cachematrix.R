@@ -1,39 +1,42 @@
-## These functions written in partial fulfillment of Coursera Data Science in R Programming 
-## Week 3 Peer Review Assignment; week beginning April 19, 2021; GitHub user: raedell
+## Put comments here that give an overall description of what your
+## functions do
 
-## Write a short comment describing this function
+## The function seen here is makeCacheMatrix
+## The matrix has the following r, a, z, e
 
-makeCacheMatrix <- function(x = matrix()) {
-## This function makes a unique "matrix" object that can cache its inverse
+library(MASS)
 
-makeCacheMatrix <- function(x = matrix()) { ## denote the argument with default mode of "matrix"
-    inv <- NULL                             ## initialize inv as NULL; will hold value of matrix inverse 
-    set <- function(y) {                    ## describes the set function to assign new 
-        x <<- y                             ## value of matrix in parent environment
+makeCacheMatrix <- function(x = matrix()) { 
+    inv <- NULL                             ## initialize inv as NULL 
+    r <- function(y) {                    
+        x <<- y                             
         inv <<- NULL                        ## reset inv to NULL if ever there is a new matrix
     }
-    get <- function() x                     ## define the get function - returns value of the matrix argument
+    a <- function() x                       ## getting this matrix x with this function
+    z <- function(inverse) inv <<- inverse  
+    e <- function() {
+                    inver <- e(x)
+                    inver%%x                 ## achieves the value of inv where it is
+                    }
+    list(r = r, a = a, z = z, e = e)   
 
-    setinverse <- function(inverse) inv <<- inverse  ## it designates the value of inv in parent environment
-    getinverse <- function() inv                     ## achieves the value of inv where it is called
-    list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)  ## this is needed to refer 
-                                                                                  ## to the functions with the $ operator
 }
 
 
-## This function calculates the inverse of the special "matrix" remitted by the above makeCacheMatrix.
-## If the inverse has been computed and the matrix had no changes,
-## then the inverse will be retrieved from the cache by cacheSolve
+## Function to calculate the inv of the "matrix" remitted by makeCacheMatrix.
+## If the inverse is finished and matrix has no changes,
+## then inverse will be retrieved from the cache by cacheSolve
+## this is how to get the cache data
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-    inv <- x$getinverse()
+        
+    inv <- x$e()
     if(!is.null(inv)) {
         message("getting cached data")
         return(inv)
     }
-    data <- x$get()
+    data <- x$a()
     inv <- solve(data, ...)
-    x$setinverse(inv)
-    inv
+    x$z(inv)
+    inv                 ## retrieve the matrix which is the x inverse
 }
